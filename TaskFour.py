@@ -3,16 +3,11 @@ import os
 from typing import List, Dict
 
 ORDERS_FILE = "orders.csv"
-
-# ------------------ Меню ------------------
-
 MENU: Dict[int, Dict[str, int]] = {
     1: {"name": "Кава", "price": 40},
     2: {"name": "Булочка", "price": 25},
     3: {"name": "Сендвіч", "price": 60},
 }
-
-# ------------------ Робота з файлом ------------------
 
 def load_orders() -> List[Dict]:
     if not os.path.exists(ORDERS_FILE):
@@ -52,8 +47,6 @@ def save_order(order: Dict):
             order["total"],
         ])
 
-# ------------------ Дії користувача ------------------
-
 def show_menu():
     print("Меню:")
     for num, item in MENU.items():
@@ -63,7 +56,7 @@ def show_menu():
 def create_order():
     date = input("Введіть дату (рядок, напр. 2025-11-25): ").strip()
     if not date:
-        print("❌ Дата не може бути порожньою")
+        print(" Дата не може бути порожньою")
         return
 
     print("Введіть номери страв через пробіл (напр. 1 2 2):")
@@ -71,24 +64,20 @@ def create_order():
     items_input = input("Номери страв: ").strip()
 
     if not items_input:
-        print("❌ Ви не обрали жодної страви")
+        print(" Ви не обрали жодної страви")
         return
-
-    # Парсимо номери
     parts = items_input.replace(",", " ").split()
     dish_numbers: List[int] = []
     for p in parts:
         try:
             n = int(p)
         except ValueError:
-            print(f"❌ '{p}' — не число")
+            print(f" '{p}' — не число")
             return
         if n not in MENU:
-            print(f"❌ Страви з номером {n} немає в меню")
+            print(f" Страви з номером {n} немає в меню")
             return
         dish_numbers.append(n)
-
-    # Формуємо список назв і суму
     dish_names: List[str] = []
     total = 0
     for n in dish_numbers:
@@ -96,8 +85,6 @@ def create_order():
         total += MENU[n]["price"]
 
     items_str = ",".join(dish_names)
-
-    # Визначаємо новий ID
     orders = load_orders()
     if orders:
         max_id = max(o["id"] for o in orders)
@@ -115,7 +102,7 @@ def create_order():
     print(f"Ви замовили: {items_str}")
     print(f"Сума: {total} грн")
     save_order(order)
-    print(f"✅ Замовлення збережено як ID={new_id}")
+    print(f" Замовлення збережено як ID={new_id}")
 
 
 def list_orders():
@@ -138,8 +125,6 @@ def total_revenue():
     total = sum(o["total"] for o in orders)
     print(f"Загальна виручка: {total} грн")
 
-# ------------------ Меню програми ------------------
-
 def main_menu():
     actions = {
         "1": show_menu,
@@ -150,23 +135,17 @@ def main_menu():
     }
 
     while True:
-        print(
-"""
-1 — Переглянути меню
-2 — Створити замовлення
-3 — Переглянути всі замовлення
-4 — Показати загальну виручку
-0 — Вийти
-"""
-        )
+        print("1 — Переглянути меню")
+        print("2 — Створити замовлення")
+        print("3 — Переглянути всі замовлення")
+        print("4 — Показати загальну виручку")
+        print("0 — Вийти")
         choice = input("Ваш вибір: ").strip()
         action = actions.get(choice)
         if action:
             action()
         else:
-            print("❌ Невірний пункт меню")
-
-# ------------------ Старт ------------------
+            print(" Невірний пункт меню")
 
 if __name__ == "__main__":
     main_menu()
